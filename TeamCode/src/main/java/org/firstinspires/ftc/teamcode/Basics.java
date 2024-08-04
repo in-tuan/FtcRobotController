@@ -9,14 +9,22 @@ import org.firstinspires.ftc.teamcode.Mechanisms;
 public class Basics extends OpMode {
 
     Mechanisms robot;
+    servoPosition servoPos;
 
     @Override
     public void init() {
         telemetry.addData("Purpose", "Runs on init");
         robot = new Mechanisms(hardwareMap);
+        servoPos = servoPosition.OPEN;
         /* This should set things back to defaulted state.
         Otherwise, they will keep its value from the last time it was modified.
          */
+    }
+
+    private enum servoPosition{
+        CLOSED,
+        HALFWAY,
+        OPEN
     }
 
     @Override
@@ -24,6 +32,23 @@ public class Basics extends OpMode {
         // Runs during play
         double motorSpeed = robot.squareInputWithSign(-gamepad1.left_stick_y);
         robot.setMotorSpeed(motorSpeed);
+
+        // A totally inaccurate example, but a demonstration of a simple state machine.
+        switch (servoPos) {
+            case OPEN:
+                robot.setServoPosition(1.0);
+                if (robot.isTouchSensorPressed()) {
+                    servoPos = servoPosition.HALFWAY;
+                }
+            case HALFWAY:
+                robot.setServoPosition(0.5);
+                if (!robot.isTouchSensorPressed()) {
+                    servoPos = servoPosition.CLOSED;
+                }
+            case CLOSED:
+                robot.setServoPosition(0.0);
+                break;
+        }
     }
 
     /*INFO ABOUT GAMEPAD LOGIC*/

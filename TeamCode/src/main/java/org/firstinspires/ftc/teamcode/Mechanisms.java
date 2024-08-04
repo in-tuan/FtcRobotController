@@ -2,16 +2,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Mechanisms {
 
     private final TouchSensor touchSensor;
     private final DcMotorEx dcMotorEx;
+    private final Servo servo;
 
     public Mechanisms (HardwareMap hardwareMap) {
-        touchSensor = hardwareMap.get(TouchSensor.class, "touch");
-        dcMotorEx = hardwareMap.get(DcMotorEx.class, "motor");
+        touchSensor = hardwareMap.touchSensor.get("touch");
+        dcMotorEx = (DcMotorEx) hardwareMap.dcMotor.get("motor");
+        servo = hardwareMap.servo.get("servo");
     }
 
     public boolean isTouchSensorPressed() {
@@ -28,5 +31,9 @@ public class Mechanisms {
             output *= -1;
         }
         return output;
+    }
+
+    public void setServoPosition(double pos) {
+        servo.setPosition(pos);
     }
 }
